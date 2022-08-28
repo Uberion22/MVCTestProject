@@ -1,0 +1,138 @@
+﻿@using MVCTestProject.ViewModels.Cryptocurrency;
+@model CryptocurrencyListViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+ <style>
+    .input-w {
+      align-items: center;
+      display: flex;
+      margin: 1em;
+    }
+
+    .input-w label {
+      padding-right: .5em;
+      white-space: nowrap;
+    }
+
+    .input-w input {
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    input {
+      font-size: 2em;
+    }
+
+    .input-w select {
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    .myForm {
+        display: flex;
+    }
+</style>
+
+<h1>Котировки криптовалют</h1>
+
+<form method="get" class="myForm">
+    <div class="input-w ">
+        <label class="control-label">Название: </label>
+        <input name="name" value=@Model?.ModelFilter.Name  class="form-control" />
+    </div>
+    <div class="input-w ">
+        <label class="control-label">Цена больше:</label>
+        <input name="price" value=@Model?.ModelFilter.Price class="form-control" type="number"/>
+     </div>
+     <div class="input-w ">
+        <label class="control-label">Капитализация больше:</label>
+        <input name="marketCap" value=@Model?.ModelFilter.MarketCap class="form-control" type="number"/>
+     </div>
+    <div class="form-group input-w">
+        <input type="submit" value="Фильтр" class="btn btn-default" style="background-color: cornflowerblue" />
+    </div>
+</form>
+<div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptocurrencyList.FirstOrDefault().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptocurrencyList.FirstOrDefault().Symbol)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptocurrencyList.FirstOrDefault().Logo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptocurrencyList.FirstOrDefault().Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptocurrencyList.FirstOrDefault().PercentChange1h)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptocurrencyList.FirstOrDefault().VolumeChange24h)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptocurrencyList.FirstOrDefault().LastUpdated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CryptocurrencyList.FirstOrDefault().MarketCap)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CryptocurrencyList) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Symbol)
+            </td>
+            <td>
+                <img src="@Html.DisplayFor(modelItem => item.Logo)" alt="Sample Image" width="32" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PercentChange1h)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VolumeChange24h)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MarketCap)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

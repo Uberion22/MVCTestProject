@@ -1,0 +1,24 @@
+﻿@model MVCTestProject.Models.LoginViewModel
+ 
+<h2 class="align-content-center">Вход на сайт</h2>
+ 
+<a asp-action="Register" asp-controller="Account">Регистрация</a>
+ 
+<form div class="flex" asp-action="Login" asp-controller="Account" asp-anti-forgery="true">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div class="align-content-center">
+        <div class="form-group">
+            <label asp-for="Email" style="min-width: 8em" >Введите Email</label>
+            <input type="text" asp-for="Email" style="min-width: 10em"/>
+            <span asp-validation-for="Email" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Password" style="min-width: 8em">Введите пароль</label>
+            <input asp-for="Password" style="min-width: 10em"/>
+            <span asp-validation-for="Password" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Войти" class="btn btn-outline-dark" />
+        </div>
+    </div>
+</form>
