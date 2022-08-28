@@ -6,7 +6,7 @@ using MVCTestProject.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<MVCTestProjectContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("UserContext") ?? throw new InvalidOperationException("Connection string 'MVCTestProjectContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MVCTestProjectContext") ?? throw new InvalidOperationException("Connection string 'MVCTestProjectContext' not found.")));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => 

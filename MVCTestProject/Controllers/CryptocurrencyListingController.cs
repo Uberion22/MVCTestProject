@@ -37,12 +37,11 @@ namespace MVCTestProject.Controllers
                 Name = m.Name,
                 Symbol = m.Symbol,
                 Price = m.Quote.QuoteItem.Price?.ToString("C3", usedCultureInfo),
-                PercentChange1h = (m.Quote.QuoteItem.PercentChange1h.GetValueOrDefault() / 100).ToString("P2"),
-                VolumeChange24h = (m.Quote.QuoteItem.PercentChange24h.GetValueOrDefault() / 100).ToString("P2"),
+                PercentChange1h = (m.Quote.QuoteItem.PercentChange1h.GetValueOrDefault() / 100.0f).ToString("P3"),
+                VolumeChange24h = (m.Quote.QuoteItem.PercentChange24h.GetValueOrDefault() / 100.0f).ToString("P3"),
                 MarketCap = m.Quote.QuoteItem.MarketCap?.ToString("C3", usedCultureInfo),
                 LastUpdated = m.LastUpdated,
                 Logo = m?.CryptocurrencyMetadata.Logo
-
             });
             PageViewModel pageViewModel = new(totalCount, page, pageSize);
             var view = new CryptocurrencyListViewModel()
