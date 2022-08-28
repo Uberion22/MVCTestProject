@@ -8,9 +8,7 @@ namespace MVCTestProject.Services
 
         public IQueryable<Cryptocurrency> GetCryptocurrencyByFilter(CryptocurrencyFilter modelFilter, out int totalCount);
 
-        public void CreateOrUpdateCryptocurrency(IEnumerable<Cryptocurrency> cryptocurrencyDTOs);
-
-        public void CreateOrUpdateCryptocurrencyMetadata(IEnumerable<CryptocurrencyMetadata> cryptocurrencyMetadatas);
+        public void CreateOrUpdateCryptocurrency(IEnumerable<Cryptocurrency> cryptocurrencies);
 
         public Task<User> GetUserByEmailAndPasswordAsync(string email, string passWord);
         

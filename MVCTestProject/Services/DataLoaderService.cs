@@ -13,22 +13,27 @@ namespace MVCTestProject.Services
         private static Timer _timer;
         private readonly int _interval = 60000; //60 секунд
         private readonly IServiceProvider _serviceProvider;      
-        private IDatabaseManager<UserContext> _databaseManager;
+        private IDatabaseManager<MVCTestProjectContext> _databaseManager;
 
         public DataLoaderService(IServiceProvider serviceProvider)
         {
-            this._serviceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
         public void UpdateCryptocurrencyInDatabase(object state)
         {
             using var scope = _serviceProvider.CreateScope();
-            _databaseManager = scope.ServiceProvider.GetService<IDatabaseManager<UserContext>>();
+            _databaseManager = scope.ServiceProvider.GetService<IDatabaseManager<MVCTestProjectContext>>();
             var cryptocurrencyDTOList = GetCryptocurrencyList().Result;
-            var idList = cryptocurrencyDTOList.Select(i => i.Id).ToList();
+            var idList = cryptocurrencyDTOList.Select(i => i.CryptocurrencyServerId).ToList();
             var cryptocurrencyMetadataDTOList = GetCryptocurrencyMetaDataList(idList).Result;
+
+            foreach (var cr in cryptocurrencyDTOList)
+            {
+                var metadata = cryptocurrencyMetadataDTOList.FirstOrDefault(i => i.CryptocurrencyServerId == cr.CryptocurrencyServerId);
+                cr.CryptocurrencyMetadata = metadata;
+            }
             _databaseManager.CreateOrUpdateCryptocurrency(cryptocurrencyDTOList);
-            _databaseManager.CreateOrUpdateCryptocurrencyMetadata(cryptocurrencyMetadataDTOList);
         }
 
         private async Task<List<Cryptocurrency>> GetCryptocurrencyList()
@@ -37,7 +42,7 @@ namespace MVCTestProject.Services
 
             var queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString["start"] = "1";
-            queryString["limit"] = "10";
+            queryString["limit"] = "100";
             queryString["convert"] = "USD";
             URL.Query = queryString.ToString();
             var client = new HttpClient();

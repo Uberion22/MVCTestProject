@@ -1,16 +1,13 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCTestProject.DataModels
 {
     public class CryptocurrencyMetadata
     {
-        [Key]
-        [ForeignKey("CryptoModel")]
         [JsonProperty("id")]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int CryptoId { get; set; }
+        public int CryptocurrencyServerId { get; set; }
 
         [JsonProperty("logo")]
         public string Logo { get; set; }
@@ -36,6 +33,6 @@ namespace MVCTestProject.DataModels
         [JsonProperty("category")]
         public string Category { get; set; }
 
-        public virtual Cryptocurrency CryptoModel { get; set; }
+        public virtual Cryptocurrency Cryptocurrency { get; set; }
     }
 }

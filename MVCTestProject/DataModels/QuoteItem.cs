@@ -4,8 +4,6 @@ namespace MVCTestProject.DataModels
 {
     public class QuoteItem
     {
-        public int Id { get; set; }
-
         [JsonProperty("price")]
         public double? Price { get; set; }
 
@@ -35,7 +33,7 @@ namespace MVCTestProject.DataModels
 
         [JsonProperty("last_updated")]
         public DateTime LastUpdated { get; set; }
-
+        
         public int QuoteId { get; set; }
 
         public virtual Quote Quote { get; set; }

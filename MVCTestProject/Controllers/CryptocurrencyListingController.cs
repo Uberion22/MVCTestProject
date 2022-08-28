@@ -10,14 +10,14 @@ namespace MVCTestProject.Controllers
     [Authorize]
     public class CryptocurrencyListingController : Controller
     {
-        private readonly IDatabaseManager<UserContext> _dbManager;
+        private readonly IDatabaseManager<MVCTestProjectContext> _dbManager;
 
-        public CryptocurrencyListingController(IDatabaseManager<UserContext> manager)
+        public CryptocurrencyListingController(IDatabaseManager<MVCTestProjectContext> manager)
         {
             _dbManager = manager;
         }
 
-        // GET: CryptoViewModels
+        // GET: CryptocurrencyList
         public IActionResult Index(string name, double price, double marketCup, int page = 1)
         {
             var pageSize = 20;
@@ -29,18 +29,19 @@ namespace MVCTestProject.Controllers
                 PageNumber = page,
                 PageSize = pageSize,
             };
+            var usedCultureInfo = System.Globalization.CultureInfo.GetCultureInfo("en-us");
             var cryptocurrencyData = _dbManager.GetCryptocurrencyByFilter(filter, out int totalCount).ToList();
             var result = cryptocurrencyData.Select(m => new CryptocurrencyViewModel()
             {
-                Id = m.Id,
+                Id = m.CryptocurrencyServerId,
                 Name = m.Name,
                 Symbol = m.Symbol,
-                Price = m.Quote.USD.Price,
-                PercentChange1h = m.Quote.USD.PercentChange1h,
-                VolumeChange24h = m.Quote.USD.VolumeChange24h,
-                MarketCap = m.Quote.USD.MarketCap,
+                Price = m.Quote.QuoteItem.Price?.ToString("C3", usedCultureInfo),
+                PercentChange1h = (m.Quote.QuoteItem.PercentChange1h.GetValueOrDefault() / 100).ToString("P2"),
+                VolumeChange24h = (m.Quote.QuoteItem.PercentChange24h.GetValueOrDefault() / 100).ToString("P2"),
+                MarketCap = m.Quote.QuoteItem.MarketCap?.ToString("C3", usedCultureInfo),
                 LastUpdated = m.LastUpdated,
-                Logo = m.Metadata.Logo
+                Logo = m?.CryptocurrencyMetadata.Logo
 
             });
             PageViewModel pageViewModel = new(totalCount, page, pageSize);

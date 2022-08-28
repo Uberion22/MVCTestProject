@@ -1,17 +1,17 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCTestProject.DataModels
 {
     public class Quote
     {
-        public int Id { get; set; }
-
-        public int CryptocurrencyId { get; set; }
-        public int QuoteId { get; set; }
-
-        [JsonProperty("USD")]
-        public virtual QuoteItem USD { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int CryprocurrencyId { get; set; }
 
         public virtual Cryptocurrency Cryptocurrency { get; set; }
+
+        [JsonProperty("USD")]
+        public virtual QuoteItem QuoteItem { get; set; }
     }
 }

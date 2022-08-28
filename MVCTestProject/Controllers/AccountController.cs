@@ -3,17 +3,17 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MVCTestProject.Data;
-using MVCTestProject.Models;
 using MVCTestProject.DataModels;
 using MVCTestProject.Services;
+using MVCTestProject.ViewModels.Account;
 
 namespace MVCTestProject.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IDatabaseManager<UserContext> _dbManager;
+        private readonly IDatabaseManager<MVCTestProjectContext> _dbManager;
 
-        public AccountController(IDatabaseManager<UserContext> dbManager)
+        public AccountController(IDatabaseManager<MVCTestProjectContext> dbManager)
         {
             _dbManager = dbManager;
         }

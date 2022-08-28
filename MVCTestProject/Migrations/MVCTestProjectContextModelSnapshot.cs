@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MVCTestProject.Migrations
 {
-    [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(MVCTestProjectContext))]
+    partial class MVCTestProjectContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace MVCTestProject.Migrations
 
             modelBuilder.Entity("MVCTestProject.DataModels.Cryptocurrency", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CryptocurrencyServerId")
                         .HasColumnType("int");
 
                     b.Property<double?>("CirculatingSupply")
@@ -48,9 +48,6 @@ namespace MVCTestProject.Migrations
                     b.Property<int?>("NumMarketPairs")
                         .HasColumnType("int");
 
-                    b.Property<int>("QuoteId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Slug")
                         .HasColumnType("nvarchar(max)");
 
@@ -60,14 +57,14 @@ namespace MVCTestProject.Migrations
                     b.Property<double?>("TotalSupply")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
+                    b.HasKey("CryptocurrencyServerId");
 
-                    b.ToTable("CryptoModel");
+                    b.ToTable("Cryptocurrencies");
                 });
 
             modelBuilder.Entity("MVCTestProject.DataModels.CryptocurrencyMetadata", b =>
                 {
-                    b.Property<int>("CryptoId")
+                    b.Property<int>("CryptocurrencyServerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Category")
@@ -94,40 +91,25 @@ namespace MVCTestProject.Migrations
                     b.Property<string>("Symbol")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CryptoId");
+                    b.HasKey("CryptocurrencyServerId");
 
                     b.ToTable("CryptoMetadatas");
                 });
 
             modelBuilder.Entity("MVCTestProject.DataModels.Quote", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("CryprocurrencyId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.HasKey("CryprocurrencyId");
 
-                    b.Property<int>("CryptocurrencyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuoteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CryptocurrencyId")
-                        .IsUnique();
-
-                    b.ToTable("Quote");
+                    b.ToTable("Quotes");
                 });
 
             modelBuilder.Entity("MVCTestProject.DataModels.QuoteItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("QuoteId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<double?>("FullyDilutedMarketCap")
                         .HasColumnType("float");
@@ -153,21 +135,15 @@ namespace MVCTestProject.Migrations
                     b.Property<double?>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("QuoteId")
-                        .HasColumnType("int");
-
                     b.Property<double?>("Volume24h")
                         .HasColumnType("float");
 
                     b.Property<double?>("VolumeChange24h")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
+                    b.HasKey("QuoteId");
 
-                    b.HasIndex("QuoteId")
-                        .IsUnique();
-
-                    b.ToTable("QuoteItem");
+                    b.ToTable("QuoteItems");
                 });
 
             modelBuilder.Entity("MVCTestProject.DataModels.User", b =>
@@ -196,20 +172,20 @@ namespace MVCTestProject.Migrations
 
             modelBuilder.Entity("MVCTestProject.DataModels.CryptocurrencyMetadata", b =>
                 {
-                    b.HasOne("MVCTestProject.DataModels.Cryptocurrency", "CryptoModel")
-                        .WithOne("Metadata")
-                        .HasForeignKey("MVCTestProject.DataModels.CryptocurrencyMetadata", "CryptoId")
+                    b.HasOne("MVCTestProject.DataModels.Cryptocurrency", "Cryptocurrency")
+                        .WithOne("CryptocurrencyMetadata")
+                        .HasForeignKey("MVCTestProject.DataModels.CryptocurrencyMetadata", "CryptocurrencyServerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CryptoModel");
+                    b.Navigation("Cryptocurrency");
                 });
 
             modelBuilder.Entity("MVCTestProject.DataModels.Quote", b =>
                 {
                     b.HasOne("MVCTestProject.DataModels.Cryptocurrency", "Cryptocurrency")
                         .WithOne("Quote")
-                        .HasForeignKey("MVCTestProject.DataModels.Quote", "CryptocurrencyId")
+                        .HasForeignKey("MVCTestProject.DataModels.Quote", "CryprocurrencyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -219,7 +195,7 @@ namespace MVCTestProject.Migrations
             modelBuilder.Entity("MVCTestProject.DataModels.QuoteItem", b =>
                 {
                     b.HasOne("MVCTestProject.DataModels.Quote", "Quote")
-                        .WithOne("USD")
+                        .WithOne("QuoteItem")
                         .HasForeignKey("MVCTestProject.DataModels.QuoteItem", "QuoteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -229,14 +205,14 @@ namespace MVCTestProject.Migrations
 
             modelBuilder.Entity("MVCTestProject.DataModels.Cryptocurrency", b =>
                 {
-                    b.Navigation("Metadata");
+                    b.Navigation("CryptocurrencyMetadata");
 
                     b.Navigation("Quote");
                 });
 
             modelBuilder.Entity("MVCTestProject.DataModels.Quote", b =>
                 {
-                    b.Navigation("USD");
+                    b.Navigation("QuoteItem");
                 });
 #pragma warning restore 612, 618
         }

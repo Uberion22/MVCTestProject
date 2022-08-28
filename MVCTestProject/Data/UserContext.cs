@@ -1,55 +1,40 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVCTestProject.DataModels;
-using MVCTestProject.ViewModels.Cryptocurrency;
 
 namespace MVCTestProject.Data
 {
-    public class UserContext : DbContext
+    public class MVCTestProjectContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Cryptocurrency> CryptoModel { get; set; }
-        public DbSet<Quote> Quote { get; set; }
-        public DbSet<QuoteItem> QuoteItem { get; set; }
+        public DbSet<Cryptocurrency> Cryptocurrencies { get; set; }
+        public DbSet<Quote> Quotes { get; set; }
+        public DbSet<QuoteItem> QuoteItems { get; set; }
         public DbSet<CryptocurrencyMetadata> CryptoMetadatas { get; set; }
-        public UserContext(DbContextOptions<UserContext> options)
+        public MVCTestProjectContext(DbContextOptions<MVCTestProjectContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
         }
-
-        public UserContext(string connection)
-        {
-            connectionString = connection;
-        }
-        private string connectionString;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-
-            if (connectionString != null)
-            {
-                var config = connectionString;
-                optionsBuilder.UseSqlServer(config);
-            }
-
-            base.OnConfiguring(optionsBuilder);
-        }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Quote>().HasKey(c => c.CryprocurrencyId);
+            modelBuilder.Entity<QuoteItem>().HasKey(c => c.QuoteId);
+            modelBuilder.Entity<CryptocurrencyMetadata>().HasKey(c => c.CryptocurrencyServerId);
+
             modelBuilder.Entity<Cryptocurrency>()
-                .HasOne(c => c.Metadata)
-                .WithOne(m => m.CryptoModel)
-                .HasForeignKey<CryptocurrencyMetadata>(cm => cm.CryptoId);
+                .HasOne(c => c.CryptocurrencyMetadata)
+                .WithOne(m => m.Cryptocurrency)
+                .HasForeignKey<CryptocurrencyMetadata>(cm => cm.CryptocurrencyServerId);
 
             modelBuilder.Entity<Cryptocurrency>()
                 .HasOne(c => c.Quote)
                 .WithOne(q => q.Cryptocurrency)
-                .HasForeignKey<Quote>(qc => qc.CryptocurrencyId);
+                .HasForeignKey<Quote>(qc => qc.CryprocurrencyId);
 
             modelBuilder.Entity<Quote>()
-                .HasOne(q => q.USD)
+                .HasOne(q => q.QuoteItem)
                 .WithOne(u => u.Quote)
                 .HasForeignKey<QuoteItem>(qu => qu.QuoteId);
         }

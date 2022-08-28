@@ -5,12 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MVCTestProject.DataModels
 {
     public class Cryptocurrency
-    {
-        
-        [JsonProperty("id")]
+    {       
         [Key]
+        [JsonProperty("id")]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
+        public int CryptocurrencyServerId { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -43,10 +42,8 @@ namespace MVCTestProject.DataModels
         public DateTime LastUpdated { get; set; }
 
         [JsonProperty("quote")]
-        public Quote Quote { get; set; }
+        public virtual Quote Quote { get; set; }
 
-        public int QuoteId { get; set; }
-
-        public virtual CryptocurrencyMetadata Metadata { get; set; }
+        public virtual CryptocurrencyMetadata CryptocurrencyMetadata { get; set; }
     }
 }

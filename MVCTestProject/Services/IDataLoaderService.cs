@@ -1,6 +1,6 @@
 ﻿namespace MVCTestProject.Services
 {
-    public interface IDataLoader: IHostedService
+    public interface IDataLoaderService: IHostedService
     {
         public void SetService(IServiceProvider hostedService);
     }

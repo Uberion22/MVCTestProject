@@ -4,57 +4,54 @@ using MVCTestProject.DataModels;
 
 namespace MVCTestProject.Services
 {
-    public class DatabaseManager: IDatabaseManager<UserContext>
+    public class DatabaseManager: IDatabaseManager<MVCTestProjectContext>
     {
-        private readonly UserContext _db;
+        private readonly MVCTestProjectContext _db;
         private bool _disposed = false;
 
-        public DatabaseManager(UserContext userContext)
+        public DatabaseManager(MVCTestProjectContext userContext)
         {
             _db = userContext;
         }
 
         public IQueryable<Cryptocurrency> GetCryptocurrencyList()
         {
-            return _db.CryptoModel.Include(x => x.Quote.USD).Include(m => m.Metadata);
+            return _db.Cryptocurrencies
+                .Include(x => x.Quote.QuoteItem)
+                .Include(m => m.CryptocurrencyMetadata);
         }
 
-        public void CreateOrUpdateCryptocurrency(IEnumerable<Cryptocurrency> cryptocurrencyDTOs)
+        public void CreateOrUpdateCryptocurrency(IEnumerable<Cryptocurrency> cryptocurrencies)
         {
-            foreach (var cryptocurrency in cryptocurrencyDTOs)
+            foreach (var cryptocurrency in cryptocurrencies)
             {
-                if (_db.CryptoModel.Any(i => i.Id == cryptocurrency.Id))
+                var current = _db.Cryptocurrencies
+                    .Include(s => s.Quote.QuoteItem)
+                    .Include(p => p.CryptocurrencyMetadata)
+                    .FirstOrDefault(i => i.CryptocurrencyServerId == cryptocurrency.CryptocurrencyServerId);
+                
+                if (current != null)
                 {
-                    _db.Update(cryptocurrency);
+                    current.Quote = null;
+                    current.CryptocurrencyMetadata = null;
+                    current.CryptocurrencyMetadata = cryptocurrency.CryptocurrencyMetadata;
+                    current.Quote = cryptocurrency.Quote;
+                    _db.SaveChanges();
                 }
                 else
                 {
                     _db.Add(cryptocurrency);
+                    _db.SaveChanges();
                 }
             }
-            _db.SaveChanges();
-        }
-
-        public void CreateOrUpdateCryptocurrencyMetadata(IEnumerable<CryptocurrencyMetadata> cryptocurrencyMetadatas)
-        {
-            foreach (var metaData in cryptocurrencyMetadatas)
-            {
-                if (_db.CryptoMetadatas.Any(i => i.CryptoId == metaData.CryptoId))
-                {
-                    _db.Update(metaData);
-                }
-                else
-                {
-                    _db.Add(metaData);
-                }
-            }
-            _db.SaveChanges();
         }
 
         public IQueryable<Cryptocurrency> GetCryptocurrencyByFilter(CryptocurrencyFilter modelFilter, out int totalCount)
         {
-            var result = _db.CryptoModel.Include(x => x.Quote.USD).Include(m => m.Metadata)
-                .Where(i => i.Quote.USD.MarketCap >= modelFilter.MarketCap && i.Quote.USD.Price >= modelFilter.Price);
+            var result = _db.Cryptocurrencies
+                .Include(x => x.Quote.QuoteItem)
+                .Include(m => m.CryptocurrencyMetadata)
+                .Where(i => i.Quote.QuoteItem.MarketCap >= modelFilter.MarketCap && i.Quote.QuoteItem.Price >= modelFilter.Price);
             
             if (!string.IsNullOrEmpty(modelFilter.Name))
             {
@@ -65,7 +62,7 @@ namespace MVCTestProject.Services
 
             result = result.Skip(modelFilter.PageSize * (modelFilter.PageNumber - 1))
                 .Take(modelFilter.PageSize)
-                .OrderByDescending(i => i.Quote.USD.Price);
+                .OrderByDescending(i => i.Quote.QuoteItem.Price);
 
             return result;
         }

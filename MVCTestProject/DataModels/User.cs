@@ -13,7 +13,7 @@ namespace MVCTestProject.DataModels
         [Required]
         public string Password { get; set; }
 
-        [Display(Name = "Registration Date")]
+        [Display(Name = "Дата регистрации")]
         [DataType(DataType.Date)]
         public DateTime RegistrationDate { get; set; }
     }

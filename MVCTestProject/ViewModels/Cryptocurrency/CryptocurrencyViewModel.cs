@@ -16,16 +16,16 @@ namespace MVCTestProject.ViewModels.Cryptocurrency
         public string Logo { get; set; }
 
         [DisplayName("Текущая цена в USD")]
-        public double? Price { get; set; }
+        public string Price { get; set; }
 
         [DisplayName("Изменение цены за 1ч")]
-        public double? PercentChange1h { get; set; }
+        public string PercentChange1h { get; set; }
 
         [DisplayName("Изменение цены за 24ч")]
-        public double? VolumeChange24h { get; set; }
+        public string VolumeChange24h { get; set; }
 
         [DisplayName("Капитализация в USD")]
-        public double? MarketCap { get; set; }
+        public string MarketCap { get; set; }
 
         [DisplayName("Время обновления данных")]
         public DateTime LastUpdated { get; set; }

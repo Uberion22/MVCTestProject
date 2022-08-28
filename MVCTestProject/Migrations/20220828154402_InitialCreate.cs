@@ -10,10 +10,10 @@ namespace MVCTestProject.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CryptoModel",
+                name: "Cryptocurrencies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    CryptocurrencyServerId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Symbol = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Slug = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -23,12 +23,11 @@ namespace MVCTestProject.Migrations
                     CirculatingSupply = table.Column<double>(type: "float", nullable: true),
                     TotalSupply = table.Column<double>(type: "float", nullable: true),
                     CmcRank = table.Column<int>(type: "int", nullable: true),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    QuoteId = table.Column<int>(type: "int", nullable: false)
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CryptoModel", x => x.Id);
+                    table.PrimaryKey("PK_Cryptocurrencies", x => x.CryptocurrencyServerId);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,7 +49,7 @@ namespace MVCTestProject.Migrations
                 name: "CryptoMetadatas",
                 columns: table => new
                 {
-                    CryptoId = table.Column<int>(type: "int", nullable: false),
+                    CryptocurrencyServerId = table.Column<int>(type: "int", nullable: false),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Symbol = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -62,41 +61,37 @@ namespace MVCTestProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CryptoMetadatas", x => x.CryptoId);
+                    table.PrimaryKey("PK_CryptoMetadatas", x => x.CryptocurrencyServerId);
                     table.ForeignKey(
-                        name: "FK_CryptoMetadatas_CryptoModel_CryptoId",
-                        column: x => x.CryptoId,
-                        principalTable: "CryptoModel",
-                        principalColumn: "Id",
+                        name: "FK_CryptoMetadatas_Cryptocurrencies_CryptocurrencyServerId",
+                        column: x => x.CryptocurrencyServerId,
+                        principalTable: "Cryptocurrencies",
+                        principalColumn: "CryptocurrencyServerId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Quote",
+                name: "Quotes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CryptocurrencyId = table.Column<int>(type: "int", nullable: false),
-                    QuoteId = table.Column<int>(type: "int", nullable: false)
+                    CryprocurrencyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Quote", x => x.Id);
+                    table.PrimaryKey("PK_Quotes", x => x.CryprocurrencyId);
                     table.ForeignKey(
-                        name: "FK_Quote_CryptoModel_CryptocurrencyId",
-                        column: x => x.CryptocurrencyId,
-                        principalTable: "CryptoModel",
-                        principalColumn: "Id",
+                        name: "FK_Quotes_Cryptocurrencies_CryprocurrencyId",
+                        column: x => x.CryprocurrencyId,
+                        principalTable: "Cryptocurrencies",
+                        principalColumn: "CryptocurrencyServerId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuoteItem",
+                name: "QuoteItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuoteId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: true),
                     Volume24h = table.Column<double>(type: "float", nullable: true),
                     VolumeChange24h = table.Column<double>(type: "float", nullable: true),
@@ -106,31 +101,18 @@ namespace MVCTestProject.Migrations
                     MarketCap = table.Column<double>(type: "float", nullable: true),
                     MarketCapDominance = table.Column<double>(type: "float", nullable: true),
                     FullyDilutedMarketCap = table.Column<double>(type: "float", nullable: true),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    QuoteId = table.Column<int>(type: "int", nullable: false)
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuoteItem", x => x.Id);
+                    table.PrimaryKey("PK_QuoteItems", x => x.QuoteId);
                     table.ForeignKey(
-                        name: "FK_QuoteItem_Quote_QuoteId",
+                        name: "FK_QuoteItems_Quotes_QuoteId",
                         column: x => x.QuoteId,
-                        principalTable: "Quote",
-                        principalColumn: "Id",
+                        principalTable: "Quotes",
+                        principalColumn: "CryprocurrencyId",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Quote_CryptocurrencyId",
-                table: "Quote",
-                column: "CryptocurrencyId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_QuoteItem_QuoteId",
-                table: "QuoteItem",
-                column: "QuoteId",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -139,16 +121,16 @@ namespace MVCTestProject.Migrations
                 name: "CryptoMetadatas");
 
             migrationBuilder.DropTable(
-                name: "QuoteItem");
+                name: "QuoteItems");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Quote");
+                name: "Quotes");
 
             migrationBuilder.DropTable(
-                name: "CryptoModel");
+                name: "Cryptocurrencies");
         }
     }
 }
